@@ -1,0 +1,789 @@
+{
+  "info": {
+    "_postman_id": "4156068f-eb1a-4d29-942d-70104c936168",
+    "name": "fake-store-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40575222",
+    "_collection_link": "https://go.postman.co/collection/40575222-4156068f-eb1a-4d29-942d-70104c936168?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "login",
+      "item": [
+        {
+          "name": "login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "//Why 201? It seems it should be 200 here\r",
+                  "pm.test(\"Status Code is 201\", () => pm.response.to.have.status(201));\r",
+                  "\r",
+                  "let response = pm.response.json();\r",
+                  "pm.collectionVariables.set(\"token\", response.access_token)"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"john@mail.com\",\r\n  \"password\": \"changeme\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "filter-products",
+      "item": [
+        {
+          "name": "getProducts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"title\", response[0].title);\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"price\", response[0].price);\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"category\", response[0].category.slug);\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"categoryId\", response[0].category.id)\r",
+                  "\r",
+                  "const arrayWithSelectedTitle = response.filter(product => product.title === response[0].title);\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"arrayWithSelectedTitle\", JSON.stringify(arrayWithSelectedTitle));\r",
+                  "\r",
+                  "console.log(arrayWithSelectedTitle);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByTitle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const title = pm.collectionVariables.get(\"title\");\r",
+                  "const arrayWithSelectedTitle = pm.collectionVariables.get(\"arrayWithSelectedTitle\");\r",
+                  "\r",
+                  "console.log(typeof arrayWithSelectedTitle)\r",
+                  "\r",
+                  "pm.test(\"Producs are filtered by title\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.title).to.eql(title);\r",
+                  "    }\r",
+                  "}\r",
+                  ")\r",
+                  "\r",
+                  "pm.test(\"All filtered results are shown\", () => {\r",
+                  "    pm.expect(response).to.eql(JSON.parse(arrayWithSelectedTitle));\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/?title={{title}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "{{title}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByPrice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const price = Number(pm.collectionVariables.get(\"price\"));\r",
+                  "\r",
+                  "pm.test(\"All shown prices are filtered by price\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.price).to.eql(price);\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price={{price}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price",
+                  "value": "{{price}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByNegativePrice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Respinse is emppty array\", () => {\r",
+                  "    pm.expect(response.length).to.eql(0);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price=-1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price",
+                  "value": "-1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByZeroPrice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const price = pm.environment.get(\"price\");\r",
+                  "\r",
+                  "pm.test(\"Respinse is emppty array\", () => {\r",
+                  "    pm.expect(response.length).to.eql(0);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filerByPriceRange",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by price range\", () => {\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.price).to.be.at.least(100);\r",
+                  "        pm.expect(product.price).to.be.at.most(500);\r",
+                  "    }\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price_min=100&price_max=500",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price_min",
+                  "value": "100"
+                },
+                {
+                  "key": "price_max",
+                  "value": "500"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filerByIncorrectPriceRange",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Respinse is emppty array\", () => {\r",
+                  "    pm.expect(response.length).to.eql(0);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price_min=200&price_max=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price_min",
+                  "value": "200"
+                },
+                {
+                  "key": "price_max",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByCategory",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by categorySlug\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.category.slug).to.eql(pm.collectionVariables.get(\"category\"));\r",
+                  "    }\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?categorySlug={{category}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "categorySlug",
+                  "value": "{{category}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByTitlePriceRangeCategory",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const categoryId = Number(pm.collectionVariables.get(\"categoryId\"));\r",
+                  "const price = Number(pm.collectionVariables.get(\"price\"));\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by price range & category\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.price).to.be.at.least(price);\r",
+                  "        pm.expect(product.price).to.be.at.most(price);\r",
+                  "        pm.expect(product.category.id).to.equal(categoryId);\r",
+                  "    }\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?title=Generic&price_min={{price}}&price_max={{price}}&categoryId={{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Generic"
+                },
+                {
+                  "key": "price_min",
+                  "value": "{{price}}"
+                },
+                {
+                  "key": "price_max",
+                  "value": "{{price}}"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByPriceRangeAndCategoryWithPagination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const categoryId = Number(pm.collectionVariables.get(\"categoryId\"));\r",
+                  "const price = Number(pm.collectionVariables.get(\"price\"));\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by price range & category\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.price).to.be.at.least(price);\r",
+                  "        pm.expect(product.price).to.be.at.most(price);\r",
+                  "        pm.expect(product.category.id).to.equal(categoryId);\r",
+                  "    }\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price_min={{price}}&price_max={{price}}&categoryId={{categoryId}}&limit=10&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price_min",
+                  "value": "{{price}}"
+                },
+                {
+                  "key": "price_max",
+                  "value": "{{price}}"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByPriceRangeWithPagination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const price = Number(pm.collectionVariables.get(\"price\"));\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by price range & category\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for(const product of response){\r",
+                  "        pm.expect(product.price).to.be.at.least(price);\r",
+                  "        pm.expect(product.price).to.be.at.most(price);\r",
+                  "    }\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/?price_min={{price}}&price_max={{price}}&limit=0&offset=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "price_min",
+                  "value": "{{price}}"
+                },
+                {
+                  "key": "price_max",
+                  "value": "{{price}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "0"
+                },
+                {
+                  "key": "offset",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByTitleAndPriceWithPagination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const title =pm.collectionVariables.get(\"title\");\r",
+                  "const response = pm.response.json();\r",
+                  "const price = pm.collectionVariables.get(\"price\");\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by title and price\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for(const product of response){\r",
+                  "        pm.expect(product.title).to.eql(title);\r",
+                  "        pm.expect(product.price).to.eql(price);\r",
+                  "    }\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?title={{title}}&price={{price}}&limit=10&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "{{title}}"
+                },
+                {
+                  "key": "price",
+                  "value": "{{price}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              "const json = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Content type is application/json\", () => {\r",
+              "    pm.expect(pm.response.headers.get('Content-Type')).to.include(\r",
+              "        'application/json',\r",
+              "    );\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response is an array\", () => {\r",
+              "    pm.expect(json).to.be.an('array');\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.escuelajs.co"
+    },
+    {
+      "key": "token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc4MTU0MDQxMSwiZXhwIjoxNzgzMjY4NDExfQ.gcACjh422UyNusFVCPq6HVXHGGJDTjfui9U3VhtEXRw"
+    },
+    {
+      "key": "title",
+      "value": "Sleek Modern Laptop with Ambient Lightin"
+    },
+    {
+      "key": "arrayWithSelectedTitle",
+      "value": "[{\"id\":23,\"title\":\"Sleek Modern Laptop with Ambient Lightin\",\"slug\":\"sleek-modern-laptop-with-ambient-lightin\",\"price\":43,\"description\":\"Experience next-level computing with our ultra-slim laptop, featuring a stunning display illuminated by ambient lighting. This high-performance machine is perfect for both work and play, delivering powerful processing in a sleek, portable design. The vibrant colors add a touch of personality to your tech collection, making it as stylish as it is functional.\",\"category\":{\"id\":2,\"name\":\"Updated Category Name\",\"slug\":\"updated-category-name\",\"image\":\"https://placeimg.com/640/480/any\",\"creationAt\":\"2026-06-15T00:00:56.000Z\",\"updatedAt\":\"2026-06-15T07:13:49.000Z\"},\"images\":[\"https://i.imgur.com/OKn1KFI.jpeg\",\"https://i.imgur.com/G4f21Ai.jpeg\",\"https://i.imgur.com/Z9oKRVJ.jpeg\"],\"creationAt\":\"2026-06-15T00:00:56.000Z\",\"updatedAt\":\"2026-06-15T07:12:18.000Z\"}]"
+    },
+    {
+      "key": "price",
+      "value": 43
+    },
+    {
+      "key": "category",
+      "value": "updated-category-name"
+    },
+    {
+      "key": "categoryId",
+      "value": 2
+    }
+  ]
+}
