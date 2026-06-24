@@ -3,8 +3,7 @@
     "_postman_id": "4156068f-eb1a-4d29-942d-70104c936168",
     "name": "fake-store-api",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "40575222",
-    "_collection_link": "https://go.postman.co/collection/40575222-4156068f-eb1a-4d29-942d-70104c936168?source=collection_link"
+    "_exporter_id": "40575222"
   },
   "item": [
     {
