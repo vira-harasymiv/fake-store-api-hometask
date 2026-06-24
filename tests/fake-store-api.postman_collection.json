@@ -43,15 +43,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "auth",
-                "login"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
             }
           },
           "response": []
@@ -95,14 +88,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"]
             }
           },
           "response": []
@@ -145,15 +132,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products/?title={{title}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products",
-                ""
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", ""],
               "query": [
                 {
                   "key": "title",
@@ -192,14 +172,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?price={{price}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "price",
@@ -234,14 +208,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?price=-1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "price",
@@ -277,14 +245,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?price=0",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "price",
@@ -322,14 +284,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?price_min=100&price_max=500",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "price_min",
@@ -368,14 +324,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?price_min=200&price_max=100",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "price_min",
@@ -417,14 +367,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?categorySlug={{category}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "categorySlug",
@@ -466,14 +410,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?title=Generic&price_min={{price}}&price_max={{price}}&categoryId={{categoryId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "title",
@@ -527,14 +465,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?price_min={{price}}&price_max={{price}}&categoryId={{categoryId}}&limit=10&offset=0",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "price_min",
@@ -590,15 +522,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products/?price_min={{price}}&price_max={{price}}&limit=0&offset=10",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products",
-                ""
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products", ""],
               "query": [
                 {
                   "key": "price_min",
@@ -651,14 +576,8 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/products?title={{title}}&price={{price}}&limit=10&offset=0",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "products"],
               "query": [
                 {
                   "key": "title",
@@ -699,9 +618,7 @@
             "type": "text/javascript",
             "packages": {},
             "requests": {},
-            "exec": [
-              ""
-            ]
+            "exec": [""]
           }
         },
         {
@@ -739,9 +656,7 @@
         "type": "text/javascript",
         "packages": {},
         "requests": {},
-        "exec": [
-          ""
-        ]
+        "exec": [""]
       }
     },
     {
@@ -750,9 +665,7 @@
         "type": "text/javascript",
         "packages": {},
         "requests": {},
-        "exec": [
-          ""
-        ]
+        "exec": [""]
       }
     }
   ],
@@ -760,26 +673,6 @@
     {
       "key": "baseUrl",
       "value": "https://api.escuelajs.co"
-    },
-    {
-      "key": "title",
-      "value": ""
-    },
-    {
-      "key": "price",
-      "value": ""
-    },
-    {
-      "key": "category",
-      "value": ""
-    },
-    {
-      "key": "categoryId",
-      "value": ""
-    },
-    {
-      "key": "arrayWithSelectedTitle",
-      "value": ""
     }
   ]
 }
