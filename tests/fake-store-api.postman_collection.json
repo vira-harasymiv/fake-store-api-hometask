@@ -762,28 +762,24 @@
       "value": "https://api.escuelajs.co"
     },
     {
-      "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc4MTU0MDQxMSwiZXhwIjoxNzgzMjY4NDExfQ.gcACjh422UyNusFVCPq6HVXHGGJDTjfui9U3VhtEXRw"
-    },
-    {
       "key": "title",
-      "value": "Sleek Modern Laptop with Ambient Lightin"
-    },
-    {
-      "key": "arrayWithSelectedTitle",
-      "value": "[{\"id\":23,\"title\":\"Sleek Modern Laptop with Ambient Lightin\",\"slug\":\"sleek-modern-laptop-with-ambient-lightin\",\"price\":43,\"description\":\"Experience next-level computing with our ultra-slim laptop, featuring a stunning display illuminated by ambient lighting. This high-performance machine is perfect for both work and play, delivering powerful processing in a sleek, portable design. The vibrant colors add a touch of personality to your tech collection, making it as stylish as it is functional.\",\"category\":{\"id\":2,\"name\":\"Updated Category Name\",\"slug\":\"updated-category-name\",\"image\":\"https://placeimg.com/640/480/any\",\"creationAt\":\"2026-06-15T00:00:56.000Z\",\"updatedAt\":\"2026-06-15T07:13:49.000Z\"},\"images\":[\"https://i.imgur.com/OKn1KFI.jpeg\",\"https://i.imgur.com/G4f21Ai.jpeg\",\"https://i.imgur.com/Z9oKRVJ.jpeg\"],\"creationAt\":\"2026-06-15T00:00:56.000Z\",\"updatedAt\":\"2026-06-15T07:12:18.000Z\"}]"
+      "value": ""
     },
     {
       "key": "price",
-      "value": 43
+      "value": ""
     },
     {
       "key": "category",
-      "value": "updated-category-name"
+      "value": ""
     },
     {
       "key": "categoryId",
-      "value": 2
+      "value": ""
+    },
+    {
+      "key": "arrayWithSelectedTitle",
+      "value": ""
     }
   ]
 }
