@@ -43,6 +43,88 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "filterByTitle",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest(\r",
+                  "    {\r",
+                  "        url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "        method: 'GET'\r",
+                  "    },\r",
+                  "    function (err, response) {\r",
+                  "        if (err) {\r",
+                  "            console.error(err);\r",
+                  "        } else {\r",
+                  "            const products = response.json();\r",
+                  "            pm.collectionVariables.set(\"title\", products[0].title);\r",
+                  "\r",
+                  "            const arrayWithSelectedTitle = products.filter(product => product.title.includes(products[0].title));\r",
+                  "            pm.collectionVariables.set(\"arrayWithSelectedTitle\", JSON.stringify(arrayWithSelectedTitle));\r",
+                  "        }\r",
+                  "    }\r",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const title = pm.collectionVariables.get(\"title\");\r",
+                  "const arrayWithSelectedTitle = JSON.parse(pm.collectionVariables.get(\"arrayWithSelectedTitle\"));\r",
+                  "\r",
+                  "pm.test(\"Producs are filtered by title\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.title).to.include(title);\r",
+                  "    }\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"All filtered results are shown\", () => {\r",
+                  "    pm.expect(response).to.eql(arrayWithSelectedTitle);\r",
+                  "})\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"title\");\r",
+                  "pm.collectionVariables.unset(\"arrayWithSelectedTitle\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products/?title={{title}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "{{title}}"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ],
       "event": [
