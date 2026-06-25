@@ -125,6 +125,164 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "filterByPrice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const price = Number(pm.collectionVariables.get(\"price\"));\r",
+                  "\r",
+                  "pm.test(\"All shown prices are filtered by price\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.price).to.eql(price);\r",
+                  "    }\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"price\")\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest(\r",
+                  "    {\r",
+                  "        url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "        method: 'GET'\r",
+                  "    },\r",
+                  "    function (err, response) {\r",
+                  "        if (err) {\r",
+                  "            console.error(err);\r",
+                  "        } else {\r",
+                  "            const products = response.json();\r",
+                  "            pm.collectionVariables.set(\"price\", products[0].price);\r",
+                  "        }\r",
+                  "    }\r",
+                  ");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price={{price}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price",
+                  "value": "{{price}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByNegativePrice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Respinse is emppty array\", () => {\r",
+                  "    pm.expect(response.length).to.eql(0);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price=-1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price",
+                  "value": "-1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByZeroPrice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const price = pm.environment.get(\"price\");\r",
+                  "\r",
+                  "pm.test(\"Respinse is emppty array\", () => {\r",
+                  "    pm.expect(response.length).to.eql(0);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ],
       "event": [
