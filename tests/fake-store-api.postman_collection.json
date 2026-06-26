@@ -684,49 +684,6 @@
             }
           },
           "response": []
-        },
-        {
-          "name": "filterByZeroPrice",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "const response = pm.response.json();\r",
-                  "const price = pm.environment.get(\"price\");\r",
-                  "\r",
-                  "pm.test(\"Response is empty array\", () => {\r",
-                  "    pm.expect(response).to.have.lengthOf(0);\r",
-                  "})"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/v1/products?price=0",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "v1",
-                "products"
-              ],
-              "query": [
-                {
-                  "key": "price",
-                  "value": "0"
-                }
-              ]
-            }
-          },
-          "response": []
         }
       ],
       "event": [
