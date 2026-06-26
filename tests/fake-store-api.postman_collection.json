@@ -347,6 +347,343 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "filterByPriceRangeAndCategoryId",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const categoryId = Number(pm.collectionVariables.get(\"categoryId\"));\r",
+                  "const productIdWithMinPrice = Number(pm.collectionVariables.get(\"productIdWithMinPrice\"));\r",
+                  "const productIdWithMaxPrice = Number(pm.collectionVariables.get(\"productIdWithMaxPrice\"));\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by price range\", () => {\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.price).to.be.at.least(1);\r",
+                  "        pm.expect(product.price).to.be.at.most(1000);\r",
+                  "    }\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"Product with min price and max price are included\", () => {\r",
+                  "    const receivedArray = response.map(product => product.id);\r",
+                  "    pm.expect(receivedArray).to.include(productIdWithMinPrice);\r",
+                  "    pm.expect(receivedArray).to.include(productIdWithMaxPrice)\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by  category\", () => {\r",
+                  "    for(const product of response){\r",
+                  "        pm.expect(product.category.id).to.equal(categoryId);\r",
+                  "    }   \r",
+                  "})\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"productIdWithMaxPrice\");\r",
+                  "pm.collectionVariables.unset(\"productIdWithMinPrice\");\r",
+                  "pm.collectionVariables.unset(\"categoryId\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// prerequest for filterByPriceRangeAndCategoryId — chain requests, don't fire in parallel\r",
+                  "pm.sendRequest({\r",
+                  "    url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "    method: \"GET\"\r",
+                  "}, function (error, response) {\r",
+                  "    if (error) { console.error(error); return; }\r",
+                  "\r",
+                  "    const data = response.json();\r",
+                  "    const categoryId = data[0].category.id;\r",
+                  "    pm.collectionVariables.set(\"categoryId\", categoryId);\r",
+                  "\r",
+                  "    pm.sendRequest({\r",
+                  "        url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "        method: \"POST\",\r",
+                  "        header: { \"Content-Type\": \"application/json\" },\r",
+                  "        body: {\r",
+                  "            mode: \"raw\",\r",
+                  "            raw: JSON.stringify({\r",
+                  "                title: \"ProductWithMinPrice\" + Math.floor(Math.random() * 100000),\r",
+                  "                price: 1,\r",
+                  "                description: \"almost for free\",\r",
+                  "                categoryId: Number(categoryId),\r",
+                  "                images: [\"https://i.imgur.com/QkIa5tT.jpeg\"]\r",
+                  "            })\r",
+                  "        }\r",
+                  "    }, function (err, res) {\r",
+                  "        if (err) { console.log(err); return; }\r",
+                  "        pm.collectionVariables.set(\"productIdWithMinPrice\", res.json().id);\r",
+                  "\r",
+                  "        // Chain the third request inside the second callback\r",
+                  "        pm.sendRequest({\r",
+                  "            url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "            method: \"POST\",\r",
+                  "            header: { \"Content-Type\": \"application/json\" },\r",
+                  "            body: {\r",
+                  "                mode: \"raw\",\r",
+                  "                raw: JSON.stringify({\r",
+                  "                    title: \"ProductWithMaxPrice\" + Math.floor(Math.random() * 200000),\r",
+                  "                    price: 1000,\r",
+                  "                    description: \"almost for free\",\r",
+                  "                    categoryId: Number(categoryId),\r",
+                  "                    images: [\"https://i.imgur.com/QkIa5tT.jpeg\"]\r",
+                  "                })\r",
+                  "            }\r",
+                  "        }, function (err2, res2) {\r",
+                  "            if (err2) { console.log(err2); return; }\r",
+                  "            pm.collectionVariables.set(\"productIdWithMaxPrice\", res2.json().id);\r",
+                  "        });\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price_min=1&price_max=1000&categoryId={{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price_min",
+                  "value": "1"
+                },
+                {
+                  "key": "price_max",
+                  "value": "1000"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByCategory",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by categorySlug\", () => {\r",
+                  "    pm.expect(response.length).to.be.at.least(1);\r",
+                  "    for (const product of response) {\r",
+                  "        pm.expect(product.category.slug).to.eql(pm.collectionVariables.get(\"category\"));\r",
+                  "    }\r",
+                  "})\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"category\")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({\r",
+                  "    url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "    method: \"GET\",\r",
+                  "}, function (error, response) {\r",
+                  "    if (error) {\r",
+                  "        console.error(\"error\")\r",
+                  "    } else {\r",
+                  "        const json = response.json();\r",
+                  "        pm.collectionVariables.set(\"category\", json[0].category.slug)\r",
+                  "    }\r",
+                  "}\r",
+                  ")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?categorySlug={{category}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "categorySlug",
+                  "value": "{{category}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filerByIncorrectPriceRange",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "response = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Respinse is emppty array\", () => {\r",
+                  "    pm.expect(response.length).to.eql(0);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price_min=200&price_max=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price_min",
+                  "value": "200"
+                },
+                {
+                  "key": "price_max",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "filterByTitleAndCategory",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();\r",
+                  "const title = pm.collectionVariables.get(\"title\");\r",
+                  "const categoryId = Number(pm.collectionVariables.get(\"categoryId\"));\r",
+                  "\r",
+                  "pm.test(\"All results are filtered by  category and title\", () => {\r",
+                  "    for(const product of response){\r",
+                  "        pm.expect(product.category.id).to.equal(categoryId);\r",
+                  "        pm.expect(product.title).to.include(title);\r",
+                  "    }   \r",
+                  "})\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"categoryId\");\r",
+                  "pm.collectionVariables.unset(\"title\")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest(\r",
+                  "    {\r",
+                  "        url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "        method: 'GET'\r",
+                  "    },\r",
+                  "    function (err, response) {\r",
+                  "        if (err) {\r",
+                  "            console.error(err);\r",
+                  "        } else {\r",
+                  "            const products = response.json();\r",
+                  "            pm.collectionVariables.set(\"title\", products[0].title);\r",
+                  "        }\r",
+                  "    }\r",
+                  ");\r",
+                  "\r",
+                  "pm.sendRequest({\r",
+                  "    url: \"https://api.escuelajs.co/api/v1/products\",\r",
+                  "    method: \"GET\",\r",
+                  "}, function (error, response) {\r",
+                  "    if (error) {\r",
+                  "        console.error(error)\r",
+                  "    } else {\r",
+                  "        const data = response.json();\r",
+                  "        pm.collectionVariables.set(\"categoryId\", data[0].category.id)\r",
+                  "    }\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?title={{title}}&categoryId={{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "{{title}}"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ],
       "event": [
