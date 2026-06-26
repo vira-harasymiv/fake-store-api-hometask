@@ -19,7 +19,7 @@ jobs:
       - name: Run Newman tests
         run: newman run tests/fake-store-api.postman_collection.json -r htmlextra
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        if: always()
         with:
           name: newman-report
           path: newman/
