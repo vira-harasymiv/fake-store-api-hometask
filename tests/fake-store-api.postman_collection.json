@@ -240,6 +240,113 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "filerByPriceRange",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "const productIdWithMinPrice = Number(pm.collectionVariables.get(\"productIdWithMinPrice\"));",
+                  "const productIdWithMaxPrice = Number(pm.collectionVariables.get(\"productIdWithMaxPrice\"));",
+                  "",
+                  "pm.test(\"All results are filtered by price range\", () => {",
+                  "    for (const product of response) {",
+                  "        pm.expect(product.price).to.be.at.least(1);",
+                  "        pm.expect(product.price).to.be.at.most(1000);",
+                  "    }",
+                  "})",
+                  "",
+                  "pm.test(\"Product with min price and max price are included\", () => {",
+                  "    const receivedArray = response.map(product => product.id);",
+                  "    pm.expect(receivedArray).to.include(productIdWithMinPrice);",
+                  "    pm.expect(receivedArray).to.include(productIdWithMaxPrice)",
+                  "})",
+                  "",
+                  "pm.collectionVariables.unset(\"productIdWithMaxPrice\");",
+                  "pm.collectionVariables.unset(\"productIdWithMinPrice\")"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "            url: \"https://api.escuelajs.co/api/v1/products\",",
+                  "            method: \"POST\",",
+                  "            header: { \"Content-Type\": \"application/json\" },",
+                  "            body: {",
+                  "                mode: \"raw\",",
+                  "                raw: JSON.stringify({",
+                  "                    title: \"ProductWithMinPrice\" + Math.floor(Math.random() * 100000),",
+                  "                    price: 1,",
+                  "                    description: \"almost for free\",",
+                  "                    categoryId: 1,",
+                  "                    images: [\"https://i.imgur.com/QkIa5tT.jpeg\"]",
+                  "                })",
+                  "            }",
+                  "        }, function (err, res) {",
+                  "            if (err) { console.log(err); return; }",
+                  "            pm.collectionVariables.set(\"productIdWithMinPrice\", res.json().id);",
+                  "        });",
+                  "",
+                  "        pm.sendRequest({",
+                  "            url: \"https://api.escuelajs.co/api/v1/products\",",
+                  "            method: \"POST\",",
+                  "            header: { \"Content-Type\": \"application/json\" },",
+                  "            body: {",
+                  "                mode: \"raw\",",
+                  "                raw: JSON.stringify({",
+                  "                    title: \"ProductWithMinPrice\" + Math.floor(Math.random() * 200000),",
+                  "                    price: 1000,",
+                  "                    description: \"almost for free\",",
+                  "                    categoryId: 1,",
+                  "                    images: [\"https://i.imgur.com/QkIa5tT.jpeg\"]",
+                  "                })",
+                  "            }",
+                  "        }, function (err, res) {",
+                  "            if (err) { console.log(err); return; }",
+                  "            pm.collectionVariables.set(\"productIdWithMaxPrice\", res.json().id);",
+                  "        });"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/products?price_min=1&price_max=1000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "price_min",
+                  "value": "1"
+                },
+                {
+                  "key": "price_max",
+                  "value": "1000"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ],
       "event": [
